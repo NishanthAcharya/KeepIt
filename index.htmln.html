@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+     @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    :root {
+      --primary: #00f7ff;
+      --primary-dark: #0077ff;
+      --secondary: #ff2d75;
+      --background: linear-gradient(135deg, #1f1c2c, #928dab);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.15);
+      --text-light: #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.7);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--background);
+      min-height: 100vh;
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 30px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 16px 20px;
+      margin: 12px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+
+    input[type="text"]:focus,
+    input[type="file"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 247, 255, 0.2);
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--text-dim);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        45deg,
+        transparent 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 75%
+      );
+      background-size: 400% 400%;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+      color: #111;
+      box-shadow: 0 4px 15px rgba(0, 247, 255, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 247, 255, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .btn-danger {
+      background: rgba(255, 45, 117, 0.2);
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+    }
+
+    .btn-danger:hover {
+      background: rgba(255, 45, 117, 0.3);
+      transform: translateY(-3px);
+    }
+
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 10px;
+      margin: 0;
+      width: auto;
+    }
+
+    .btn-icon {
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 50%;
+      margin: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .subject-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .subject {
+      background: var(--card-bg);
+      padding: 18px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .subject:hover {
+      background: var(--card-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .subject-name {
+      font-weight: 500;
+      font-size: 18px;
+      flex: 1;
+    }
+
+    .file-count {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-right: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #fileList {
+      margin-top: 20px;
+    }
+
+    .file-item {
+      background: var(--card-bg);
+      padding: 16px 20px;
+      margin: 12px 0;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .file-item:hover {
+      background: var(--card-hover);
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-icon {
+      font-size: 20px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .file-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .preview {
+      max-width: 90%;
+      max-height: 80vh;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 247, 255, 0.5);
+      display: block;
+      border: 2px solid var(--primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-dim);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .empty-state p {
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .file-input-container {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .file-input-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .file-input-label:hover {
+      border-color: var(--primary);
+      background: rgba(0, 247, 255, 0.05);
+    }
+
+    .file-input-label i {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .file-input-label p {
+      color: var(--text-dim);
+      margin-bottom: 5px;
+    }
+
+    #fileInput {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    /* Footer Styles */
+    .app-footer {
+      width: 100%;
+      text-align: center;
+      padding: 20px;
+      margin-top: auto;
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .app-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-footer a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* Mobile-specific styles */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .container {
+        padding: 20px;
+      }
+      
+      .subject {
+        padding: 15px;
+      }
+      
+      .subject-name {
+        font-size: 16px;
+      }
+      
+      .file-count {
+        margin-right: 10px;
+        font-size: 13px;
+      }
+      
+      .file-item {
+        padding: 12px 15px;
+      }
+      
+      .file-name {
+        font-size: 14px;
+      }
+      
+      .btn-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+      }
+      
+      .app-footer {
+        padding: 15px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1><i class="fas fa-book-open"></i> Notes Tracker</h1>
+
+  <div class="container" id="mainView">
+    <input type="text" id="subjectName" placeholder="Enter subject name...">
+    <button class="btn btn-primary" onclick="addSubject()">
+      <i class="fas fa-plus"></i> Add Subject
+    </button>
+    
+    <div class="subject-list" id="subjectContainer">
+      <!-- Subjects will be rendered here -->
+    </div>
+    
+    <div class="empty-state" id="emptyState">
+      <i class="fas fa-book"></i>
+      <h3>No subjects yet</h3>
+      <p>Add your first subject to get started</p>
+    </div>
+  </div>
+
+  <div class="container hidden" id="subjectView">
+    <h2><i class="fas fa-folder-open"></i> <span id="currentSubject"></span></h2>
+    
+    <div class="file-input-container">
+      <label class="file-input-label" for="fileInput">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Click to upload files or drag and drop</p>
+        <small>Supports images and PDFs</small>
+      </label>
+      <input type="file" id="fileInput" multiple accept="image/*, application/pdf">
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" onclick="saveFiles()" style="flex: 1;">
+        <i class="fas fa-save"></i> Save
+      </button>
+      <button class="btn btn-secondary" onclick="goBack()" style="flex: 1;">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+    
+    <div id="fileList">
+      <!-- Files will be rendered here -->
+    </div>
+    
+    <div class="empty-state hidden" id="emptyFilesState">
+      <i class="fas fa-file-alt"></i>
+      <h3>No files yet</h3>
+      <p>Upload your first file for this subject</p>
+    </div>
+  </div>
+
+ <footer style="text-align: center; padding: 12px;">
+  <p style="
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', sans-serif;
+    color: #00ffe5;
+    text-shadow: 1px 1px 2px #000;
+    letter-spacing: 0.6px;">
+    ⚡ <span style="color: #ff00a6;">Nishanth</span> Presents: <span style="color: #00ffe5;">Your Ultimate Notes Folder</span>
+  </p>
+</footer>
+
+
+
+
+  <script>
+    let selectedSubject = "";
+
+    // Clear any existing data on first mobile load
+    if (window.innerWidth <= 600 && !localStorage.getItem('firstLoad')) {
+      localStorage.clear();
+      localStorage.setItem('firstLoad', 'true');
+    }
+
+    function addSubject() {
+      let subjectName = document.getElementById("subjectName").value.trim();
+      if (!subjectName) {
+        alert("Please enter a subject name.");
+        return;
+      }
+
+      let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+      if (!subjects.includes(subjectName)) {
+        subjects.push(subjectName);
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+      }
+
+      renderSubjects();
+      document.getElementById("subjectName").value = "";
+    }
+
+    function renderSubjects() {
+      let subjectContainer = document.getElementById("subjectContainer");
+      let emptyState = document.getElementById("emptyState");
+      subjectContainer.innerHTML = "";
+
+      let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+      
+      if (subjects.length === 0) {
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      
+      emptyState.classList.add("hidden");
+
+      subjects.forEach(subject => {
+        let files = JSON.parse(localStorage.getItem(`files_${subject}`)) || [];
+        
+        let subjectDiv = document.createElement("div");
+        subjectDiv.className = "subject";
+        subjectDiv.onclick = function() { openSubject(subject); };
+        
+        subjectDiv.innerHTML = `
+          <div class="subject-name">${subject}</div>
+          <div class="file-count">${files.length} ${files.length === 1 ? 'file' : 'files'}</div>
+        `;
+        
+        let deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = `<i class="fas fa-trash"></i>`;
+        deleteBtn.className = "btn btn-danger btn-icon";
+        deleteBtn.title = "Delete subject";
+        deleteBtn.onclick = function(event) {
+          event.stopPropagation();
+          deleteSubject(subject);
+        };
+        
+        subjectDiv.appendChild(deleteBtn);
+        subjectContainer.appendChild(subjectDiv);
+      });
+    }
+
+    function openSubject(subject) {
+      selectedSubject = subject;
+      document.getElementById("currentSubject").innerText = subject;
+      document.getElementById("mainView").classList.add("hidden");
+      document.getElementById("subjectView").classList.remove("hidden");
+      renderFiles();
+    }
+
+    function saveFiles() {
+      let fileInput = document.getElementById("fileInput");
+      let fileList = JSON.parse(localStorage.getItem(`files_${selectedSubject}`)) || [];
+
+      if (fileInput.files.length === 0) {
+        alert("Please select at least one file to upload.");
+        return;
+      }
+
+      for (let file of fileInput.files) {
+        let fileData = { 
+          name: file.name, 
+          url: URL.createObjectURL(file), 
+          type: file.type
+        };
+        fileList.push(fileData);
+      }
+
+      localStorage.setItem(`files_${selectedSubject}`, JSON.stringify(fileList));
+      renderFiles();
+      fileInput.value = "";
+    }
+
+    function renderFiles() {
+      let fileListDiv = document.getElementById("fileList");
+      let emptyFilesState = document.getElementById("emptyFilesState");
+      fileListDiv.innerHTML = "";
+
+      let files = JSON.parse(localStorage.getItem(`files_${selectedSubject}`)) || [];
+      
+      if (files.length === 0) {
+        emptyFilesState.classList.remove("hidden");
+        return;
+      }
+      
+      emptyFilesState.classList.add("hidden");
+
+      files.forEach(file => {
+        let fileTypeIcon = file.type.startsWith("image") ? "fa-image" : "fa-file-pdf";
+        
+        let fileItem = document.createElement("div");
+        fileItem.className = "file-item";
+        fileItem.innerHTML = `
+          <div class="file-info">
+            <i class="fas ${fileTypeIcon} file-icon"></i>
+            <span class="file-name">${file.name}</span>
+          </div>
+          <div class="file-actions">
+            <button class="btn btn-secondary btn-icon" onclick="viewFile('${file.url}', '${file.type}')" title="View file">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-danger btn-icon" onclick="deleteFile('${file.name}')" title="Delete file">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        fileListDiv.appendChild(fileItem);
+      });
+    }
+
+    function viewFile(fileUrl, fileType) {
+      if (fileType.startsWith("image")) {
+        let modal = document.createElement("div");
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.backgroundColor = "rgba(0,0,0,0.9)";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+        modal.style.zIndex = "1000";
+        modal.style.cursor = "pointer";
+        
+        let img = document.createElement("img");
+        img.src = fileUrl;
+        img.className = "preview";
+        
+        modal.appendChild(img);
+        modal.onclick = function() {
+          document.body.removeChild(modal);
+        };
+        
+        document.body.appendChild(modal);
+      } else if (fileType === "application/pdf") {
+        window.open(fileUrl, "_blank");
+      }
+    }
+
+    function deleteSubject(subjectName) {
+      if (confirm(`Are you sure you want to delete "${subjectName}" and all its files?`)) {
+        let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+        subjects = subjects.filter(subject => subject !== subjectName);
+        localStorage.removeItem(`files_${subjectName}`);
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+        renderSubjects();
+      }
+    }
+
+    function deleteFile(fileName) {
+      if (confirm(`Are you sure you want to delete "${fileName}"?`)) {
+        let files = JSON.parse(localStorage.getItem(`files_${selectedSubject}`)) || [];
+        files = files.filter(file => file.name !== fileName);
+        localStorage.setItem(`files_${selectedSubject}`, JSON.stringify(files));
+        renderFiles();
+      }
+    }
+
+    function goBack() {
+      document.getElementById("subjectView").classList.add("hidden");
+      document.getElementById("mainView").classList.remove("hidden");
+      selectedSubject = "";
+    }
+
+    // Initialize the app
+    window.onload = function() {
+      renderSubjects();
+      
+      // Add drag and drop functionality
+      const fileInputLabel = document.querySelector('.file-input-label');
+      const fileInput = document.getElementById('fileInput');
+      
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        fileInputLabel.style.borderColor = 'var(--primary)';
+        fileInputLabel.style.background = 'rgba(0, 247, 255, 0.05)';
+      }
+      
+      function unhighlight() {
+        fileInputLabel.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        fileInputLabel.style.background = 'rgba(0, 0, 0, 0.1)';
+      }
+      
+      fileInputLabel.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+      }
+    };
+  </script>
+</body>
+</html>
